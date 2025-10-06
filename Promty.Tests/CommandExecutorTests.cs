@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Reflection;
 using Promty;
 using Promty.Attributes;
@@ -18,13 +19,22 @@ public class CommandExecutorTests
             public bool Verbose { get; set; }
         }
 
-        public static int ExecuteCallCount { get; set; }
-        public static Args? LastArgs { get; set; }
+        private static readonly ConcurrentBag<Args> _executedArgs = new();
+        private static int _executeCallCount = 0;
+
+        public static int ExecuteCallCount => _executeCallCount;
+        public static Args? LastArgs => _executedArgs.LastOrDefault();
+
+        public static void Reset()
+        {
+            _executedArgs.Clear();
+            _executeCallCount = 0;
+        }
 
         public override Task<int> ExecuteAsync(Args args)
         {
-            ExecuteCallCount++;
-            LastArgs = args;
+            Interlocked.Increment(ref _executeCallCount);
+            _executedArgs.Add(args);
             return Task.FromResult(0);
         }
     }
@@ -62,8 +72,7 @@ public class CommandExecutorTests
     public CommandExecutorTests()
     {
         // Reset static counters before each test
-        TestCommand.ExecuteCallCount = 0;
-        TestCommand.LastArgs = null;
+        TestCommand.Reset();
     }
 
     [Fact]
