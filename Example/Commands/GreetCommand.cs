@@ -1,7 +1,7 @@
 using Promty;
 using Promty.Attributes;
 
-namespace Commander.Commands;
+namespace Example.Commands;
 
 [Description("greet", "Greets a person by name")]
 public class GreetCommand : Command<GreetCommand.Args>

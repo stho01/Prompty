@@ -1,7 +1,7 @@
 using Promty;
 using Promty.Attributes;
 
-namespace Commander.Commands;
+namespace Example.Commands;
 
 [Description("git", "Execute git commands")]
 public class GitCommand : ProcessCommand

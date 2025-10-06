@@ -2,7 +2,7 @@
 using Promty;
 using Promty.Attributes;
 
-namespace Commander.Commands;
+namespace Example.Commands;
 
 public sealed class FooCommand : Command<FooCommand.Args>
 {

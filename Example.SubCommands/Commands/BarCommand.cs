@@ -1,7 +1,7 @@
 ﻿using Promty;
 using Promty.Attributes;
 
-namespace Commander.SubCommands.Commands;
+namespace Example.SubCommands.Commands;
 
 [Description("bar", "Execute the bar command")]
 public class BarCommand : Command<BarCommand.Args>

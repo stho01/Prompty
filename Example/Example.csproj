@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Promty\Promty.csproj" />
-    <ProjectReference Include="..\Commander.SubCommands\Commander.SubCommands.csproj" />
+    <ProjectReference Include="..\Example.SubCommands\Example.SubCommands.csproj" />
   </ItemGroup>
 
 </Project>

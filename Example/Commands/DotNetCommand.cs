@@ -1,7 +1,7 @@
 using Promty;
 using Promty.Attributes;
 
-namespace Commander.Commands;
+namespace Example.Commands;
 
 [Description("dotnet", "Execute dotnet CLI commands")]
 public class DotNetCommand : ProcessCommand

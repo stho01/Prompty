@@ -1,7 +1,7 @@
 using Promty;
 using Promty.Attributes;
 
-namespace Commander.Commands;
+namespace Example.Commands;
 
 [Description("copy", "Copies a file from source to destination")]
 public class CopyCommand : Command<CopyCommand.Args>

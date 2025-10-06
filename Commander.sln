@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commander", "Commander\Commander.csproj", "{F8FEF22A-512A-4815-BC77-7BADEC5F11E9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "Example\Example.csproj", "{F8FEF22A-512A-4815-BC77-7BADEC5F11E9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Promty", "Promty\Promty.csproj", "{35290859-BE19-4E73-9D01-A0FE0C48E0C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commander.SubCommands", "Commander.SubCommands\Commander.SubCommands.csproj", "{6AC81339-8E13-4B94-BFEB-83D37E2F0887}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.SubCommands", "Example.SubCommands\Example.SubCommands.csproj", "{6AC81339-8E13-4B94-BFEB-83D37E2F0887}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
