@@ -1,6 +1,10 @@
-# Promty
+<div align="center">
+  <img src="gpx/logo6.png" alt="Promty Logo" width="200"/>
 
-A powerful and flexible command-line parser and command executor framework for .NET applications. Build beautiful CLI tools with minimal boilerplate code.
+  # Promty
+
+  A powerful and flexible command-line parser and command executor framework for .NET applications. Build beautiful CLI tools with minimal boilerplate code.
+</div>
 
 ## Features
 
