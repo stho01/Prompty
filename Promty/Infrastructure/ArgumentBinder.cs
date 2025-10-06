@@ -104,11 +104,11 @@ public class ArgumentBinder
             }
             else if (underlyingType == typeof(long))
             {
-                convertedValue = long.Parse(value);
+                convertedValue = long.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
             }
             else if (underlyingType == typeof(double))
             {
-                convertedValue = double.Parse(value);
+                convertedValue = double.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
             }
             else if (underlyingType == typeof(string))
             {

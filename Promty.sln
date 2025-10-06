@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Promty", "Promty\Promty.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.SubCommands", "Example.SubCommands\Example.SubCommands.csproj", "{6AC81339-8E13-4B94-BFEB-83D37E2F0887}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Promty.Tests", "Promty.Tests\Promty.Tests.csproj", "{549CC38E-A127-4692-BE49-C5608D918A54}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{6AC81339-8E13-4B94-BFEB-83D37E2F0887}.Release|x64.Build.0 = Release|Any CPU
 		{6AC81339-8E13-4B94-BFEB-83D37E2F0887}.Release|x86.ActiveCfg = Release|Any CPU
 		{6AC81339-8E13-4B94-BFEB-83D37E2F0887}.Release|x86.Build.0 = Release|Any CPU
+		{549CC38E-A127-4692-BE49-C5608D918A54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{549CC38E-A127-4692-BE49-C5608D918A54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{549CC38E-A127-4692-BE49-C5608D918A54}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{549CC38E-A127-4692-BE49-C5608D918A54}.Debug|x64.Build.0 = Debug|Any CPU
+		{549CC38E-A127-4692-BE49-C5608D918A54}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{549CC38E-A127-4692-BE49-C5608D918A54}.Debug|x86.Build.0 = Debug|Any CPU
+		{549CC38E-A127-4692-BE49-C5608D918A54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{549CC38E-A127-4692-BE49-C5608D918A54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{549CC38E-A127-4692-BE49-C5608D918A54}.Release|x64.ActiveCfg = Release|Any CPU
+		{549CC38E-A127-4692-BE49-C5608D918A54}.Release|x64.Build.0 = Release|Any CPU
+		{549CC38E-A127-4692-BE49-C5608D918A54}.Release|x86.ActiveCfg = Release|Any CPU
+		{549CC38E-A127-4692-BE49-C5608D918A54}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
