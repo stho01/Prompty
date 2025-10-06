@@ -17,7 +17,7 @@
         <RepositoryType>git</RepositoryType>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageIcon>logo7.png</PackageIcon>
+        <PackageIcon>logo8.png</PackageIcon>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -27,7 +27,7 @@
 
     <ItemGroup>
         <None Include="..\README.md" Pack="true" PackagePath="\" />
-        <None Include="..\gpx\logo7.png" Pack="true" PackagePath="\" />
+        <None Include="..\gpx\logo8.png" Pack="true" PackagePath="\" />
     </ItemGroup>
 
 </Project>
