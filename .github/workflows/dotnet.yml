@@ -19,13 +19,13 @@ jobs:
         dotnet-version: '9.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore Commander.sln
+      run: dotnet restore Promty.sln
 
     - name: Build
-      run: dotnet build Commander.sln --configuration Release --no-restore
+      run: dotnet build Promty.sln --configuration Release --no-restore
 
     - name: Test
-      run: dotnet test Commander.sln --configuration Release --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx"
+      run: dotnet test Promty.sln --configuration Release --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx"
 
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
