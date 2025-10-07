@@ -1,6 +1,6 @@
 namespace Promty.Attributes;
 
-[AttributeUsage(AttributeTargets.Property)]
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
 public class FlagAliasAttribute : Attribute
 {
     public string LongAlias { get; }
