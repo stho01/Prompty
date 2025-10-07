@@ -32,20 +32,31 @@ internal sealed class HelpTextGenerator
         var argsType = baseType.GetGenericArguments()[0];
         var properties = argsType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-        // Separate into positional and flags
+        // Separate into positional, flags, and flags enums
         var positionalProps = new List<PropertyInfo>();
         var flagProps = new List<PropertyInfo>();
+        var flagEnumProps = new List<PropertyInfo>();
 
         foreach (var prop in properties)
         {
-            var flagAlias = prop.GetCustomAttribute<FlagAliasAttribute>();
-            if (flagAlias != null)
+            var propertyType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+
+            // Check if it's a [Flags] enum
+            if (propertyType.IsEnum && propertyType.GetCustomAttribute<FlagsAttribute>() != null)
             {
-                flagProps.Add(prop);
+                flagEnumProps.Add(prop);
             }
             else
             {
-                positionalProps.Add(prop);
+                var flagAlias = prop.GetCustomAttribute<FlagAliasAttribute>();
+                if (flagAlias != null)
+                {
+                    flagProps.Add(prop);
+                }
+                else
+                {
+                    positionalProps.Add(prop);
+                }
             }
         }
 
@@ -68,38 +79,92 @@ internal sealed class HelpTextGenerator
             sb.AppendLine();
         }
 
-        // Show optional flags
-        if (flagProps.Count > 0)
+        // Collect all flag options (both regular flags and flags from enums)
+        var allFlagOptions = new List<(string aliasText, string? description)>();
+
+        // Add regular flag properties
+        foreach (var prop in flagProps)
         {
-            sb.AppendLine("Options:");
-            foreach (var prop in flagProps)
+            var flagAlias = prop.GetCustomAttribute<FlagAliasAttribute>()!;
+            var descAttr = prop.GetCustomAttribute<DescriptionAttribute>();
+
+            var aliases = new List<string>();
+            if (flagAlias.ShortAlias.HasValue)
             {
-                var flagAlias = prop.GetCustomAttribute<FlagAliasAttribute>()!;
-                var descAttr = prop.GetCustomAttribute<DescriptionAttribute>();
+                aliases.Add($"-{flagAlias.ShortAlias.Value}");
+            }
+            if (!string.IsNullOrEmpty(flagAlias.LongAlias))
+            {
+                aliases.Add($"--{flagAlias.LongAlias}");
+            }
+
+            var aliasText = string.Join(", ", aliases);
+
+            // Add value placeholder for non-bool types
+            var propertyType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+            if (propertyType != typeof(bool))
+            {
+                aliasText += $" <{prop.Name.ToLower()}>";
+            }
+
+            allFlagOptions.Add((aliasText, descAttr?.Description));
+        }
+
+        // Add flags from [Flags] enum properties
+        foreach (var prop in flagEnumProps)
+        {
+            var propertyType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+            var fields = propertyType.GetFields(BindingFlags.Public | BindingFlags.Static);
+
+            foreach (var field in fields)
+            {
+                // Skip the "None" value (0) in flags enums
+                var fieldValue = (int)field.GetValue(null)!;
+                if (fieldValue == 0)
+                    continue;
+
+                var flagAlias = field.GetCustomAttribute<FlagAliasAttribute>();
+                var descAttr = field.GetCustomAttribute<DescriptionAttribute>();
 
                 var aliases = new List<string>();
-                if (flagAlias.ShortAlias.HasValue)
+                string? longAlias;
+                char? shortAlias = null;
+
+                if (flagAlias != null)
                 {
-                    aliases.Add($"-{flagAlias.ShortAlias.Value}");
+                    longAlias = flagAlias.LongAlias;
+                    shortAlias = flagAlias.ShortAlias;
                 }
-                if (!string.IsNullOrEmpty(flagAlias.LongAlias))
+                else
                 {
-                    aliases.Add($"--{flagAlias.LongAlias}");
+                    // Convert field name to kebab-case
+                    longAlias = ConvertToKebabCase(field.Name);
+                }
+
+                if (shortAlias.HasValue)
+                {
+                    aliases.Add($"-{shortAlias.Value}");
+                }
+                if (!string.IsNullOrEmpty(longAlias))
+                {
+                    aliases.Add($"--{longAlias}");
                 }
 
                 var aliasText = string.Join(", ", aliases);
+                allFlagOptions.Add((aliasText, descAttr?.Description));
+            }
+        }
 
-                // Add value placeholder for non-bool types
-                var propertyType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
-                if (propertyType != typeof(bool))
-                {
-                    aliasText += $" <{prop.Name.ToLower()}>";
-                }
-
+        // Show all options
+        if (allFlagOptions.Count > 0)
+        {
+            sb.AppendLine("Options:");
+            foreach (var (aliasText, description) in allFlagOptions)
+            {
                 sb.Append($"  {aliasText}");
-                if (descAttr != null)
+                if (description != null)
                 {
-                    sb.Append($"  {descAttr.Description}");
+                    sb.Append($"  {description}");
                 }
                 sb.AppendLine();
             }
@@ -124,8 +189,11 @@ internal sealed class HelpTextGenerator
         // Add positional arguments first
         foreach (var prop in properties)
         {
+            var propertyType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+            var isFlagsEnum = propertyType.IsEnum && propertyType.GetCustomAttribute<FlagsAttribute>() != null;
             var flagAlias = prop.GetCustomAttribute<FlagAliasAttribute>();
-            if (flagAlias == null)
+
+            if (flagAlias == null && !isFlagsEnum)
             {
                 var descAttr = prop.GetCustomAttribute<DescriptionAttribute>();
                 var argName = descAttr?.Name ?? prop.Name.ToLower();
@@ -134,13 +202,43 @@ internal sealed class HelpTextGenerator
         }
 
         // Add options placeholder
-        var hasFlags = properties.Any(p => p.GetCustomAttribute<FlagAliasAttribute>() != null);
+        var hasFlags = properties.Any(p =>
+        {
+            var propertyType = Nullable.GetUnderlyingType(p.PropertyType) ?? p.PropertyType;
+            var isFlagsEnum = propertyType.IsEnum && propertyType.GetCustomAttribute<FlagsAttribute>() != null;
+            return p.GetCustomAttribute<FlagAliasAttribute>() != null || isFlagsEnum;
+        });
+
         if (hasFlags)
         {
             parts.Add("[options]");
         }
 
         return string.Join(" ", parts);
+    }
+
+    private static string ConvertToKebabCase(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return value;
+
+        var result = new StringBuilder();
+        result.Append(char.ToLowerInvariant(value[0]));
+
+        for (int i = 1; i < value.Length; i++)
+        {
+            if (char.IsUpper(value[i]))
+            {
+                result.Append('-');
+                result.Append(char.ToLowerInvariant(value[i]));
+            }
+            else
+            {
+                result.Append(value[i]);
+            }
+        }
+
+        return result.ToString();
     }
 
     public string GenerateCommandList(Dictionary<string, Type> commands)

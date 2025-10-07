@@ -11,10 +11,14 @@ public sealed class FooCommand : Command<FooCommand.Args>
     {
         None = 0,
         [FlagAlias("verbose", 'v')]
+        [Description("Enable verbose output")]
         Verbose = 1,
         [FlagAlias("debug", 'd')]
+        [Description("Build in debug mode")]
         Debug = 2,
+        [Description("Disable build cache")]
         NoCache = 4,
+        [Description("Skip running tests")]
         SkipTests = 8
     }
 

@@ -149,6 +149,60 @@ public class HelpTextGeneratorTests
         Assert.True(minimalIndex < simpleIndex);
     }
 
+    // Flags enum help text tests
+    [Description("flagsenum", "Command with flags enum")]
+    private class FlagsEnumCommand : Command<FlagsEnumCommand.Args>
+    {
+        [Flags]
+        public enum BuildOptions
+        {
+            None = 0,
+            [FlagAlias("verbose", 'v')]
+            [Description("Enable verbose logging")]
+            Verbose = 1,
+            [FlagAlias("debug", 'd')]
+            [Description("Enable debug mode")]
+            Debug = 2,
+            [Description("Skip cache")]
+            NoCache = 4,
+            [Description("Skip all tests")]
+            SkipTests = 8
+        }
+
+        public class Args
+        {
+            [Description("project", "Project name")]
+            public string Project { get; set; } = string.Empty;
+
+            public BuildOptions Options { get; set; }
+        }
+
+        public override Task<int> ExecuteAsync(Args args) => Task.FromResult(0);
+    }
+
+    [Fact]
+    public async Task CommandExecutor_WithFlagsEnum_ShouldShowAllFlags()
+    {
+        var output = await CaptureConsoleOutput(async () =>
+        {
+            var executor = new CommandExecutor();
+            executor.RegisterCommandsFromAssembly(Assembly.GetExecutingAssembly());
+            await executor.ExecuteAsync(["flagsenum"]);
+        });
+
+        Assert.Contains("Usage: flagsenum <project> [options]", output);
+        Assert.Contains("Options:", output);
+        Assert.Contains("-v, --verbose", output);
+        Assert.Contains("Enable verbose logging", output);
+        Assert.Contains("-d, --debug", output);
+        Assert.Contains("Enable debug mode", output);
+        Assert.Contains("--no-cache", output);
+        Assert.Contains("Skip cache", output);
+        Assert.Contains("--skip-tests", output);
+        Assert.Contains("Skip all tests", output);
+        Assert.DoesNotContain("--none", output); // Should not show None value
+    }
+
     private async Task<string> CaptureConsoleOutput(Func<Task> action)
     {
         var originalOut = Console.Out;
