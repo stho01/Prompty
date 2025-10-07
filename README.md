@@ -3,6 +3,11 @@
 
   # Promty
 
+  [![NuGet Version](https://img.shields.io/nuget/v/Promty?style=flat-square&logo=nuget)](https://www.nuget.org/packages/Promty)
+  [![NuGet Downloads](https://img.shields.io/nuget/dt/Promty?style=flat-square&logo=nuget)](https://www.nuget.org/packages/Promty)
+  [![Build](https://img.shields.io/github/actions/workflow/status/stho01/promty/dotnet.yml?branch=main&style=flat-square&logo=github)](https://github.com/stho01/promty/actions)
+  [![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
+
   A powerful and flexible command-line parser and command executor framework for .NET applications. Build beautiful CLI tools with minimal boilerplate code.
 </div>
 
