@@ -9,6 +9,8 @@
   [![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
 
   A powerful and flexible command-line parser and command executor framework for .NET applications. Build beautiful CLI tools with minimal boilerplate code.
+
+  **[📚 Documentation](https://stho01.github.io/promty/)** · **[🚀 Getting Started](https://stho01.github.io/promty/guide/getting-started)** · **[💡 Examples](https://stho01.github.io/promty/examples/basic)**
 </div>
 
 ## Features
