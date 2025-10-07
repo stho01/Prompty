@@ -12,7 +12,7 @@
         <Company>STHO Co</Company>
         <Description>A powerful command-line parser and command executor framework for .NET applications. Supports typed arguments, flags with long/short aliases, automatic help text generation, and process command execution.</Description>
         <PackageTags>cli;command-line;parser;arguments;command;framework;promty</PackageTags>
-        <PackageProjectUrl>https://github.com/stho01/prompty</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/stho01/promty</PackageProjectUrl>
         <RepositoryUrl>https://github.com/stho01/promty</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
