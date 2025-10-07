@@ -240,4 +240,116 @@ public class ArgumentBinderTests
         Assert.Null(args.Double);
         Assert.False(args.Bool);
     }
+
+    // Flags enum tests
+    [Flags]
+    private enum BuildOptions
+    {
+        None = 0,
+        [FlagAlias("verbose", 'v')]
+        Verbose = 1,
+        [FlagAlias("debug", 'd')]
+        Debug = 2,
+        Release = 4,
+        SkipTests = 8
+    }
+
+    private class FlagsEnumArgs
+    {
+        [Description("name", "The name")]
+        public string Name { get; set; } = string.Empty;
+
+        public BuildOptions Options { get; set; }
+    }
+
+    [Fact]
+    public void Bind_WithSingleFlagAlias_ShouldBindCorrectly()
+    {
+        var parser = new CommandLineParser();
+        parser.Parse(["test", "--verbose"]);
+
+        var binder = new ArgumentBinder();
+        var args = binder.Bind<FlagsEnumArgs>(parser);
+
+        Assert.Equal("test", args.Name);
+        Assert.Equal(BuildOptions.Verbose, args.Options);
+    }
+
+    [Fact]
+    public void Bind_WithMultipleFlagAliases_ShouldCombineFlags()
+    {
+        var parser = new CommandLineParser();
+        parser.Parse(["test", "--verbose", "--debug"]);
+
+        var binder = new ArgumentBinder();
+        var args = binder.Bind<FlagsEnumArgs>(parser);
+
+        Assert.Equal("test", args.Name);
+        Assert.Equal(BuildOptions.Verbose | BuildOptions.Debug, args.Options);
+    }
+
+    [Fact]
+    public void Bind_WithShortFlagAliasForFlagsEnum_ShouldBindCorrectly()
+    {
+        var parser = new CommandLineParser();
+        parser.Parse(["test", "-v"]);
+
+        var binder = new ArgumentBinder();
+        var args = binder.Bind<FlagsEnumArgs>(parser);
+
+        Assert.Equal("test", args.Name);
+        Assert.Equal(BuildOptions.Verbose, args.Options);
+    }
+
+    [Fact]
+    public void Bind_WithKebabCaseFlagName_ShouldBindCorrectly()
+    {
+        var parser = new CommandLineParser();
+        parser.Parse(["test", "--skip-tests"]);
+
+        var binder = new ArgumentBinder();
+        var args = binder.Bind<FlagsEnumArgs>(parser);
+
+        Assert.Equal("test", args.Name);
+        Assert.Equal(BuildOptions.SkipTests, args.Options);
+    }
+
+    [Fact]
+    public void Bind_WithMixedAliasesAndKebabCase_ShouldCombineFlags()
+    {
+        var parser = new CommandLineParser();
+        parser.Parse(["test", "-v", "--release", "--skip-tests"]);
+
+        var binder = new ArgumentBinder();
+        var args = binder.Bind<FlagsEnumArgs>(parser);
+
+        Assert.Equal("test", args.Name);
+        Assert.Equal(BuildOptions.Verbose | BuildOptions.Release | BuildOptions.SkipTests, args.Options);
+    }
+
+    [Fact]
+    public void Bind_WithNoFlags_ShouldReturnNone()
+    {
+        var parser = new CommandLineParser();
+        parser.Parse(["test"]);
+
+        var binder = new ArgumentBinder();
+        var args = binder.Bind<FlagsEnumArgs>(parser);
+
+        Assert.Equal("test", args.Name);
+        Assert.Equal(BuildOptions.None, args.Options);
+    }
+
+    [Fact]
+    public void Bind_WithAllFlags_ShouldCombineAll()
+    {
+        var parser = new CommandLineParser();
+        parser.Parse(["test", "-v", "-d", "--release", "--skip-tests"]);
+
+        var binder = new ArgumentBinder();
+        var args = binder.Bind<FlagsEnumArgs>(parser);
+
+        Assert.Equal("test", args.Name);
+        Assert.Equal(BuildOptions.Verbose | BuildOptions.Debug | BuildOptions.Release | BuildOptions.SkipTests, args.Options);
+    }
 }

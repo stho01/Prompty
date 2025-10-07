@@ -1,6 +1,6 @@
 namespace Promty.Attributes;
 
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Property)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Property | AttributeTargets.Field)]
 public class DescriptionAttribute : Attribute
 {
     public string Description { get; }
