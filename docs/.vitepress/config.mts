@@ -3,7 +3,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "Promty",
   description: "A powerful command-line parser and command executor framework for .NET",
-  base: '/Prompty/',
+  base: '/Promty/',
 
   themeConfig: {
     logo: '/logo.png',
@@ -47,7 +47,7 @@ export default defineConfig({
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/stho01/promty' },
+      { icon: 'github', link: 'https://github.com/stho01/Promty' },
       { icon: 'npm', link: 'https://www.nuget.org/packages/Promty' }
     ],
 
