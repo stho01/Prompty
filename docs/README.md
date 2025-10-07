@@ -28,4 +28,4 @@ npm run docs:preview
 
 The documentation is automatically deployed to GitHub Pages when changes are pushed to the `main` branch.
 
-Visit: https://stho01.github.io/promty/
+Visit: https://stho01.github.io/Prompty/

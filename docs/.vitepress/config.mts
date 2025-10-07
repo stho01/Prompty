@@ -3,7 +3,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "Promty",
   description: "A powerful command-line parser and command executor framework for .NET",
-  base: '/promty/',
+  base: '/Prompty/',
 
   themeConfig: {
     logo: '/logo.png',
