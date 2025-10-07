@@ -182,22 +182,92 @@ public bool Verbose { get; set; }
 
 ## Argument Types
 
-Commander.Core supports automatic type conversion for:
+Promty supports automatic type conversion for:
 
 - `string`
 - `int`, `long`, `double`
 - `bool`
 - Nullable versions: `int?`, `bool?`, etc.
+- `[Flags]` enums (see below)
 
 ### Argument Rules
 
-1. **Positional arguments** (without `[FlagAlias]`) are **required** and must come **before** flags
+1. **Positional arguments** (without `[FlagAlias]` and not `[Flags]` enums) are **required** and must come **before** flags
 2. **Flag arguments** (with `[FlagAlias]`) are **optional**
-3. Boolean flags don't require values: `--verbose` is equivalent to `--verbose true`
+3. **`[Flags]` enum properties** are automatically treated as optional flags
+4. Boolean flags don't require values: `--verbose` is equivalent to `--verbose true`
+
+### Flags Enums
+
+Instead of defining multiple boolean properties, you can use a `[Flags]` enum to group related flags together. Each enum value becomes an individual command-line flag that can be combined.
+
+```csharp
+[Description("build", "Build a project with options")]
+public class BuildCommand : Command<BuildCommand.Args>
+{
+    [Flags]
+    public enum BuildOptions
+    {
+        None = 0,
+        [FlagAlias("verbose", 'v')]
+        [Description("Enable verbose output")]
+        Verbose = 1,
+        [FlagAlias("debug", 'd')]
+        [Description("Build in debug mode")]
+        Debug = 2,
+        [Description("Disable build cache")]
+        NoCache = 4,
+        [Description("Skip running tests")]
+        SkipTests = 8
+    }
+
+    public class Args
+    {
+        [Description("project", "Project name")]
+        public string Project { get; set; } = string.Empty;
+
+        // No [FlagAlias] needed on the property!
+        public BuildOptions Options { get; set; }
+    }
+
+    public override Task<int> ExecuteAsync(Args args)
+    {
+        Console.WriteLine($"Building {args.Project}");
+
+        if (args.Options.HasFlag(BuildOptions.Verbose))
+            Console.WriteLine("Verbose mode enabled");
+
+        if (args.Options.HasFlag(BuildOptions.Debug))
+            Console.WriteLine("Debug mode enabled");
+
+        return Task.FromResult(0);
+    }
+}
+```
+
+Usage:
+```bash
+# Combine multiple flags
+dotnet run -- build MyProject --verbose --debug --skip-tests
+
+# Use short aliases
+dotnet run -- build MyProject -v -d
+
+# Mix aliases with kebab-case names
+dotnet run -- build MyProject -v --no-cache
+```
+
+**Flags Enum Features:**
+- Each enum field becomes an individual flag in the help text
+- Use `[FlagAlias]` on enum fields for custom long/short aliases
+- Enum fields without `[FlagAlias]` auto-convert to kebab-case (e.g., `NoCache` → `--no-cache`)
+- Use `[Description]` on enum fields to provide help text
+- The `None = 0` value is automatically excluded from help output
+- Multiple flags can be combined and are stored as a bitwise combination
 
 ## Help Text
 
-Commander.Core automatically generates beautiful help text:
+Promty automatically generates beautiful help text:
 
 ```
 Usage: greet <name> [options]
@@ -212,11 +282,29 @@ Options:
   -r, --repeat <repeat>    Number of times to repeat the greeting
 ```
 
+For commands with `[Flags]` enums, each flag is displayed individually:
+
+```
+Usage: build <project> [options]
+
+Build a project with options
+
+Arguments:
+  <project>  Project name
+
+Options:
+  -v, --verbose     Enable verbose output
+  -d, --debug       Build in debug mode
+  --no-cache        Disable build cache
+  --skip-tests      Skip running tests
+```
+
 Command list is formatted as a table:
 
 ```
 Available commands:
 
+  build    Build a project with options
   copy     Copies a file from source to destination
   git      Execute git commands
   greet    Greets a person by name
